@@ -1,0 +1,20 @@
+/vendor
+composer.lock
+.phpunit.result.cache
+.phpunit.cache
+.phpstan.cache
+.idea
+.vscode
+.DS_Store
+
+# --- hidden guide / AI-assist meta files ---
+PORTFOLIO.md
+HOW-TO-USE.md
+*HOW-TO*
+*HOWTO*
+*GUIDE*
+*guide*
+DEPLOY.md
+*.ai.md
+.cursor/
+.cursorrules

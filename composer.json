@@ -1,0 +1,45 @@
+{
+    "name": "umair/redis-rate-limiter",
+    "description": "Framework-agnostic PHP rate limiter with sliding window and token bucket algorithms backed by Redis Lua scripts. Laravel middleware included.",
+    "type": "library",
+    "keywords": ["rate-limit", "redis", "throttle", "laravel", "sliding-window", "token-bucket"],
+    "license": "MIT",
+    "authors": [
+        {"name": "Umair", "email": "your@email.com"}
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.0",
+        "orchestra/testbench": "^9.0",
+        "predis/predis": "^2.2",
+        "laravel/pint": "^1.13",
+        "phpstan/phpstan": "^1.11"
+    },
+    "suggest": {
+        "predis/predis": "Required if using Predis client",
+        "ext-redis": "Required if using PhpRedis extension"
+    },
+    "autoload": {
+        "psr-4": {
+            "Umair\\RateLimiter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Umair\\RateLimiter\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["Umair\\RateLimiter\\Laravel\\RateLimiterServiceProvider"]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable"
+}
