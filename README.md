@@ -1,24 +1,34 @@
 # Redis Rate Limiter (PHP)
 
+[CI results](https://github.com/umairjutt/redis-rate-limiter/actions) · [Engineering guide](PORTFOLIO.md)
+
+> **Status:** Development library. Registry publication is not currently verified. Existing algorithm tests use an in-memory store; real Redis adapter and concurrency verification remain.
+
 A framework-agnostic PHP rate limiter with a Laravel middleware bridge. Implements both **sliding window** and **token bucket** algorithms backed by Redis Lua scripts for atomic decisions.
 
-[![Packagist](https://img.shields.io/badge/packagist-v1.0.0-blue)](https://packagist.org/packages/umair/redis-rate-limiter)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## What this demonstrates
 
 - **Two algorithms** behind a single interface — `SlidingWindow` and `TokenBucket`
-- **Atomic Redis operations** via Lua scripts (no race conditions under load)
+- **Atomic Redis operations** via Lua scripts (atomic within the script)
 - **Framework-agnostic core** — works with any PHP 8.2+ project
 - **Laravel middleware** wrapper for drop-in API protection
-- **PSR-12 compliant**, fully typed, zero dependencies beyond Redis client
+- **Typed PHP core** — Redis access is delegated through a store interface
 - **Composer package** publishable to Packagist
 
-## Install
+## Develop from source
+
+Registry installation is not currently verified. Use a local source checkout:
 
 ```bash
-composer require umair/redis-rate-limiter
+git clone https://github.com/umairjutt/redis-rate-limiter.git
+cd redis-rate-limiter
+composer install
+./vendor/bin/pest
 ```
+
+Examples below use this checkout. A consuming application needs an explicit local Composer path repository until a registry release is available.
 
 ## Usage — vanilla PHP
 
@@ -46,7 +56,7 @@ if (!$result->allowed) {
 
 ## Usage — Laravel
 
-After `composer require`, add to a route:
+After configuring the local package and service provider in a Laravel development application, add to a route:
 
 ```php
 Route::middleware('rate.limit:api,100,60')->get('/users', $controller);
@@ -64,19 +74,14 @@ $middleware->alias([
 ## Algorithms
 
 ### Sliding Window (`SlidingWindow`)
-Counts hits in a rolling N-second window using a Redis sorted set. Most accurate; tiny memory overhead per key.
+Counts hits in a rolling N-second window using a Redis sorted set. Entries remain for the configured window; memory use depends on request volume.
 
 ### Token Bucket (`TokenBucket`)
 Refills tokens at a fixed rate. Allows short bursts up to the bucket capacity. Best for "smooth-but-bursty" workloads.
 
 ## Performance
 
-A single Lua-script round trip per request. Benchmarked on a Raspberry Pi 4 with `redis-server` local:
-
-| Algorithm     | Ops/sec (single key) | p99 latency |
-|---------------|---------------------:|------------:|
-| SlidingWindow |               24,000 |       0.6ms |
-| TokenBucket   |               31,000 |       0.4ms |
+Each algorithm makes one Redis Lua call per decision. No reproducible benchmark is included; throughput and latency need a documented workload, client and Redis configuration.
 
 ## Tests
 
@@ -96,4 +101,4 @@ MIT
 
 **Umair** &mdash; [@umairjutt](https://github.com/umairjutt)
 
-Designed, built and maintained by me. Licensed under the [MIT License](LICENSE).
+Maintained by [Umair Jutt](https://github.com/umairjutt). See [LICENSE](LICENSE) for repository licensing.
